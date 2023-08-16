@@ -17,14 +17,28 @@ import kotlinx.android.synthetic.main.activity_join.*
 class JoinActivity : AppCompatActivity() {
 
     private val TAG = "JoinActivity"
+    private lateinit var auth: FirebaseAuth
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join)
 
+        // Initialize Firebase Auth
+        auth = Firebase.auth
+
         joinBtn.setOnClickListener {
-            Log.d(TAG, emailArea.text.toString())
-            Log.d(TAG, pwdArea.text.toString())
+            auth.createUserWithEmailAndPassword(emailArea.text.toString(), pwdArea.text.toString())
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "createUserWithEmail:success")
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                    }
+                }
+
         }
 
     }
